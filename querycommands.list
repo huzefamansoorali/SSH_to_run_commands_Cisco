@@ -1,0 +1,3 @@
+show version | inc Software
+show ip int bri
+show int desc
