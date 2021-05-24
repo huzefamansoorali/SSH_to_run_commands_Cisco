@@ -8,8 +8,7 @@ from getpass import getpass
 # Ask for username and password at the start of script to be used for SSH connection to devices.
 username = input("Please enter your username for SSH: ")
 password = getpass("Please enter your password for SSH: ")
-# username = "developer"
-# password = "C1sco12345"
+
 
 # Ask and verify the file containing host list, hostnames should be one per line.
 path = os.path.dirname(os.path.abspath(__file__))
