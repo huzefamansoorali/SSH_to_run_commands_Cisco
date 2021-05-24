@@ -6,10 +6,10 @@ import re
 from getpass import getpass
 
 # Ask for username and password at the start of script to be used for SSH connection to devices.
-# username = input("Please enter your username for SSH: ")
-# password = getpass("Please enter your password for SSH: ")
-username = "developer"
-password = "C1sco12345"
+username = input("Please enter your username for SSH: ")
+password = getpass("Please enter your password for SSH: ")
+# username = "developer"
+# password = "C1sco12345"
 
 # Ask and verify the file containing host list, hostnames should be one per line.
 path = os.path.dirname(os.path.abspath(__file__))
@@ -21,22 +21,18 @@ if os.path.isfile(hostfile):
     hosts1text = hosts1.read()
     print(hosts1text)
     hosts1.seek(0)
-    hosts_list = []
 
     # User input to verify hosts are correct
     proceed_hosts = input("\n Please enter 'Yes' to continue or 'No' to exit: \n")
 
-    for hosts in hosts1:
-        if proceed_hosts == "Yes":
-            stripped_hosts = hosts.strip()
-            stripped_hosts_line = stripped_hosts.split()
-            hosts_list.append(stripped_hosts_line)
+    if proceed_hosts == "Yes":
+        hosts_list = hosts1.readlines()
 
-        elif proceed_hosts == "No":
-            sys.exit()
+    elif proceed_hosts == "No":
+        sys.exit()
 
-        else:
-            sys.exit()
+    else:
+        sys.exit()
 
     hosts1.close()
 
@@ -54,21 +50,18 @@ if os.path.isfile(hostcommands):
     commands1text = commands1.read()
     print(commands1text)
     commands1.seek(0)
-    commands_list = []
 
     # User input to verify hosts are correct
     proceed_commands = input("\n Please enter 'Yes' to continue or 'No' to exit: \n")
 
-    for commands in commands1:
-        if proceed_hosts == "Yes":
-            stripped_commands = commands.strip()
-            commands_list.append(stripped_commands)
+    if proceed_commands == "Yes":
+        commands_list = commands1.readlines()
 
-        elif proceed_hosts == "No":
-            sys.exit()
+    elif proceed_commands == "No":
+        sys.exit()
 
-        else:
-            sys.exit()
+    else:
+        sys.exit()
 
     commands1.close()
 
@@ -77,11 +70,11 @@ else:
     sys.exit()
 
 # port = input("Enter port number for SSH connection")
-port = 8181
+port = 22
 
 # iterate hosts list
 for host in hosts_list:
-    host = host.pop()
+    host = host.strip()
 
     # Creating SSH CONNECTION
     try:
@@ -102,12 +95,12 @@ for host in hosts_list:
         time.sleep(2)
 
         # Setting terminal length for entire output - disable pagination
-        connection.send(b"terminal length 0\n")
-        time.sleep(1)
+        connection.send(b"\nterminal length 0\n")
+        time.sleep(2)
 
         # Iterate commands to run
         for command in commands_list:
-            connection.send(b"\n")
+            command = command.strip()
             connection.send(command.encode('ascii'))
             time.sleep(3)
             connection.send(b"\n")
@@ -126,6 +119,7 @@ for host in hosts_list:
 
         # Closing the connection
         session.close()
+        print(f"\nClosed SSH to ... {host}\n")
 
     except paramiko.AuthenticationException:
         print("* Invalid username or password \n* Please check the username/password file or the device configuration.")
