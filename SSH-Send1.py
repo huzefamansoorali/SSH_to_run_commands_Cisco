@@ -106,15 +106,24 @@ for host in hosts_list:
             time.sleep(2)
 
             # Receive buffer output
-            file_output = connection.recv(8000).decode('ascii')
+            recv_output = connection.recv(8000).decode('ascii')
             time.sleep(2)
 
-            if re.search("% Invalid input", file_output):
+            if re.search("% Invalid input", recv_output):
                 print("There was at least one syntax error on device")
 
             # Print the output interactively to the CLI
-            print(str(file_output))
+            print(str(recv_output))
+            
+            # Write output to the output file
+            file = path+"/queryoutput.list"
+            fileoutput = open(file, "w")
+            fileoutput.write(str(recv_output))
+            fileoutput.close
+            
+            
             time.sleep(2)
+            
 
         # Closing the connection
         session.close()
